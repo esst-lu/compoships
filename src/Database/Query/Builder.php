@@ -3,6 +3,7 @@
 namespace Awobaz\Compoships\Database\Query;
 
 use Illuminate\Database\Query\Builder as BaseQueryBuilder;
+use Illuminate\Support\Facades\DB;
 
 class Builder extends BaseQueryBuilder
 {
