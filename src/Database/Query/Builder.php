@@ -8,11 +8,30 @@ class Builder extends BaseQueryBuilder
 {
     public function whereIn($column, $values, $boolean = 'and', $not = false)
     {
-        //Here we implement custom support for multi-column 'IN'
-        //A multi-column 'IN' is a series of OR/AND clauses
-        //TODO: Optimization
+        // implement custom support for multi-column 'IN'
         if (is_array($column)) {
             $this->where(function ($query) use ($column, $values) {
+                // build left values
+                $left = 'CONCAT(';
+                foreach ($column as $attribute) {
+                    $left .= "CONVERT($attribute, CHAR)";
+                    $left .= ", '-', ";
+                }
+                $left = rtrim($left, ", '-',");
+                $left .= ')';
+
+                $left = DB::raw("LEFT($left, LENGTH($left))");
+
+                // build right values side
+                $right = [];
+                foreach ($values as $value) {
+                    $right[] = implode("-", $value);
+                }
+
+                $query->whereIn($left, $right);
+            });
+
+            /*$this->where(function ($query) use ($column, $values) {
                 foreach ($values as $value) {
                     $query->orWhere(function ($query) use ($column, $value) {
                         foreach ($column as $index => $aColumn) {
@@ -20,7 +39,7 @@ class Builder extends BaseQueryBuilder
                         }
                     });
                 }
-            });
+            });*/
 
             return $this;
         }
