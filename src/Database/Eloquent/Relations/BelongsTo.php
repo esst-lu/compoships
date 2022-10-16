@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo as BaseBelongsTo;
 
+/**
+ * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @extends BaseBelongsTo<TRelatedModel>
+ */
 class BelongsTo extends BaseBelongsTo
 {
     /**
@@ -28,7 +32,7 @@ class BelongsTo extends BaseBelongsTo
     /**
      * Associate the model instance to the given parent.
      *
-     * @param \Illuminate\Database\Eloquent\Model|int|string $model
+     * @param \Illuminate\Database\Eloquent\Model|int|string|null $model
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
