@@ -1,7 +1,7 @@
 <?php
 
 /** @var \Composer\Autoload\ClassLoader $autoloader */
-$autoloader = require_once dirname(__DIR__).'/vendor/autoload.php';
+$autoloader = require dirname(__DIR__).'/vendor/autoload.php';
 
 if (PHP_MAJOR_VERSION === 7 && in_array(PHP_MINOR_VERSION, [0, 1])) {
     $mappedTestCaseFilename = __DIR__.'/TestCase/TestCase6.php';
@@ -19,15 +19,7 @@ date_default_timezone_set('UTC');
 if (!function_exists('getLaravelVersion')) {
     function getLaravelVersion()
     {
-        exec("composer show 'illuminate/database' | grep 'versions' | grep -o -E '\*\ .+' | cut -d' ' -f2 | cut -d',' -f1;", $output);
-        $output = str_replace('v', '', isset($output[0]) ? $output[0] : '0.0');
-        $version = explode('.', $output);
-
-        if (!is_numeric($version[0])) {
-            return 0.0;
-        }
-
-        return (float) "$version[0].$version[1]";
+        return (float) \Composer\InstalledVersions::getVersion('illuminate/database');
     }
 }
 if (!function_exists('getPHPVersion')) {
@@ -37,4 +29,8 @@ if (!function_exists('getPHPVersion')) {
 
         return (float) "$version[0].$version[1]";
     }
+}
+
+if (getLaravelVersion() < 8.0) {
+    class_alias(\Awobaz\Compoships\Tests\Factories\DumbHasFactory::class, '\Illuminate\Database\Eloquent\Factories\HasFactory');
 }
